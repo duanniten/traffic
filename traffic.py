@@ -68,7 +68,7 @@ def load_data(data_dir):
             img = cv2.imread(fullPath)
             img = cv2.resize(img,(IMG_HEIGHT,IMG_WIDTH), interpolation=cv2.INTER_AREA)
             categoria = int(os.path.basename(root))
-            images.append(img)
+            images.append(img /255.0)
             labels.append(categoria)
     return (images, labels)
 
@@ -81,10 +81,15 @@ def get_model():
     model = tf.keras.models.Sequential([
 
     # Convolutional layer. Learn 32 filters using a 3x3 kernel
-    tf.keras.layers.Conv2D(
-    32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT,IMG_WIDTH, 3)),
-    
+    tf.keras.layers.Conv2D(32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT,IMG_WIDTH, 3)),
     tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+    
+    tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+
+    tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+    
     tf.keras.layers.Flatten(),
 
     tf.keras.layers.Dense(128, activation="relu"),
